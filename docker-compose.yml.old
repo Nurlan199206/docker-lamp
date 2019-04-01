@@ -1,0 +1,35 @@
+version: "3"
+services:
+
+  web:
+    image: httpd
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+    volumes:
+      - ./htdocs:/usr/local/apache2/htdocs
+      - ./conf.d/httpd.conf:/usr/local/apache2/conf/httpd.conf
+  php:
+    image: php:7.1-fpm
+    ports:
+     - "9000:9000"
+    volumes:
+     - ./htdocs:/usr/local/apache2/htdocs
+
+  mysql:
+     image: mysql:5.7
+     ports:
+      - "3306:3306"
+     environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
